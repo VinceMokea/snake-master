@@ -1,11 +1,17 @@
 import math
 import random
 import cvzone
-import CV2
+import cv2
 import numpy as np
 from cvzone.HandTrackingModule import HandDetector
 #导入需要用到的包
 cap = CV2.VideoCapture(2)
+"""
+VideoCapture()中参数是0,表示打开笔记本的内置摄像头,
+参数是1,则打开外置摄像头,
+其他数字则代表其他设备
+"""
+
 cap.set(3, 1280)
 cap.set(4, 720)
 #对摄像头进行调用，并设置界面大小
