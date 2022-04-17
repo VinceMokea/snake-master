@@ -1,11 +1,17 @@
 import math
 import random
 import cvzone
-import CV2
+import cv2
 import numpy as np
 from cvzone.HandTrackingModule import HandDetector
 #导入需要用到的包
-cap = CV2.VideoCapture(2)
+cap = cv2.VideoCapture(2)
+"""
+VideoCapture()中参数是0,表示打开笔记本的内置摄像头,
+参数是1,则打开外置摄像头,
+其他数字则代表其他设备
+"""
+
 cap.set(3, 1280)
 cap.set(4, 720)
 #对摄像头进行调用，并设置界面大小
@@ -20,7 +26,7 @@ class SnakeGameClass:
         self.allowedLength = 150
         self.previousHead = 0, 0
 
-        self.imgFood = CV2.imread(pathFood, CV2.IMREAD_UNCHANGED)
+        self.imgFood = cv2.imread(pathFood, cv2.IMREAD_UNCHANGED)
         self.hFood, self.wFood, _ = self.imgFood.shape
         self.foodPoint = 0, 0
         self.randomFoodLocation()
@@ -70,8 +76,8 @@ class SnakeGameClass:
             if self.points:
                 for i, point in enumerate(self.points):
                     if i != 0:
-                        CV2.line(imgMain, self.points[i - 1], self.points[i], (0, 0, 255), 20)
-                CV2.circle(imgMain, self.points[-1], 20, (0, 255, 0), CV2.FILLED)
+                        cv2.line(imgMain, self.points[i - 1], self.points[i], (0, 0, 255), 20)
+                cv2.circle(imgMain, self.points[-1], 20, (0, 255, 0), cv2.FILLED)
 
 
             imgMain = cvzone.overlayPNG(imgMain, self.imgFood,
@@ -83,8 +89,8 @@ class SnakeGameClass:
             # 检查是否碰撞
             pts = np.array(self.points[:-2], np.int32)
             pts = pts.reshape((-1, 1, 2))
-            CV2.polylines(imgMain, [pts], False, (0, 255, 0), 3)
-            minDist = CV2.pointPolygonTest(pts, (cx, cy), True)
+            cv2.polylines(imgMain, [pts], False, (0, 255, 0), 3)
+            minDist = cv2.pointPolygonTest(pts, (cx, cy), True)
 
             if -1 <= minDist <= 1:
                 print("Hit")
@@ -103,14 +109,14 @@ game = SnakeGameClass("Donut.png") # 食物图片可以自己随便换
 
 while True:
     success, img = cap.read()
-    img = CV2.flip(img, 1)
+    img = cv2.flip(img, 1)
     hands, img = detector.findHands(img, flipType=False)
 
     if hands:
         lmList = hands[0]['lmList']
         pointIndex = lmList[8][0:2]
         img = game.update(img, pointIndex)
-    CV2.imshow("Image", img)
-    key = CV2.waitKey(1)
+    cv2.imshow("Image", img)
+    key = cv2.waitKey(1)
     if key == ord('r'):
         game.gameOver = False
